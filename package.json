@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "dev": "shx rm -rf ./build && concurrently --handle-input \"npm run dev:js-runtime\" \"npm run dev:watch\"",
+    "dev:watch": "shadow-cljs watch :script",
+    "dev:js-runtime": "wait-on ./build && nodemon -i . ./build/index.js",
+    "build": "shadow-cljs compile :script"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0",
+    "nodemon": "^3.1.10",
+    "shadow-cljs": "^3.1.8",
+    "shx": "^0.4.0",
+    "wait-on": "^8.0.4"
+  }
+}

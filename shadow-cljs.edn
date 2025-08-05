@@ -1,0 +1,5 @@
+{:source-paths ["src"]
+ :dependecies {}
+ :builds {:script {:target :node-script
+                   :main index/-main
+                   :output-to "build/index.js"}}}
