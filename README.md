@@ -87,4 +87,4 @@ But what if you should change handler?
 
 Why you should call `on-input` via lambda?
 Because JS Runtime save reference to handler and CLJS runtime can't change this references.
-But references from CLJS (from CLJS lambda) to CLJS (to `on-input`) can be updated by CLJ runtime and it's works! 
+But references from CLJS (from lambda) to CLJS (to `on-input`) can be updated by CLJS runtime and it's works! 
