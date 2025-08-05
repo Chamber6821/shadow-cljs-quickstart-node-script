@@ -22,7 +22,7 @@ npm install
 npm run dev
 ````
 
-This runs `shadow-cljs watch :script` and `nodemon ./build/index.js` via [concurrently](https://www.npmjs.com/package/concurrently)
+This runs `shadow-cljs watch :script` and `node ./build/index.js` via [concurrently](https://www.npmjs.com/package/concurrently)
 
 # Live reload
 
