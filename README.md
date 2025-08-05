@@ -28,10 +28,63 @@ This runs `shadow-cljs watch :script` and `nodemon ./build/index.js` via [concur
 
 To see the live reload in action you can edit the src/index.cljs. Some output will be printed in the terminal.
 
-> [!NOTE]
-> You may need to reload the JS Runtime, for which you can use [manual nodemon reload](https://github.com/remy/nodemon#manual-restarting)
-
-
 # nREPL
 
 [Guide for Conjure](https://github.com/Olical/conjure/wiki/Quick-start:-ClojureScript-(shadow-cljs)#connect-and-select)
+
+# Update JS state without reloading JS Runtime
+
+## Example with handlers
+
+```clj
+(ns index)
+
+(js/process.stdin.on "data" prn)
+```
+
+When you save your script, hot-reload will execute the file again.
+The old handler will not be deleted and a new handler will be created.
+Example of interaction (`npm run dev`):
+
+```
+[1] [:script] Configuring build.
+[1] [:script] Compiling ...
+[1] [:script] Build completed. (87 files, 0 compiled, 0 warnings, 1.52s)
+[0] shadow-cljs - #3 ready!
+first load
+[0] #object[Buffer first load
+[0] ]
+[1] [:script] Compiling ...
+[1] [:script] Build completed. (87 files, 1 compiled, 0 warnings, 0.08s)
+code reloaded
+[0] #object[Buffer code reloaded
+[0] ]
+[0] #object[Buffer code reloaded
+[0] ]
+```
+
+To solve the problem with incorrect JS state updating,
+it is worth doing all subscriptions inside the `-main` function
+
+```clj
+(ns index)
+
+(defn -main []
+  (js/process.stdin.on "data" prn))
+```
+
+But what if you should change handler?
+
+```clj
+(ns index)
+
+(defn on-input [buffer]
+  (prn buffer))
+
+(defn -main []
+  (js/process.stdin.on "data" #(on-input %)))
+```
+
+Why you should call `on-input` via lambda?
+Because JS Runtime save reference to handler and CLJS runtime can't change this references.
+But references from CLJS (from CLJS lambda) to CLJS (to `on-input`) can be updated by CLJ runtime and it's works! 
